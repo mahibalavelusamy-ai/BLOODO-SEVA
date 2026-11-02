@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check centre membership via custom token claim or user profile
+    function belongsToCentre(centreId) {
+      return isAuthenticated() && (
+        request.auth.token.centreId == centreId ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.centreId == centreId
+      );
+    }
+    
+    // Helper function to check staff role
+    function isStaff(centreId) {
+      return belongsToCentre(centreId) && (
+        request.auth.token.role in ['admin', 'staff'] ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'staff']
+      );
+    }
+
+    // User profiles collection
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || request.auth.token.role == 'admin');
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Centre isolation
+    match /centres/{centreId} {
+      allow read: if belongsToCentre(centreId);
+      allow write: if isStaff(centreId);
+
+      // Donors subcollection (isolated per centre)
+      match /donors/{donorId} {
+        allow read: if belongsToCentre(centreId);
+        allow create, update: if isStaff(centreId);
+        allow delete: if isStaff(centreId);
+      }
+
+      // Requests & waves subcollection
+      match /requests/{requestId} {
+        allow read: if belongsToCentre(centreId);
+        allow create, update: if isStaff(centreId);
+        allow delete: if isStaff(centreId);
+      }
+
+      // Patients & Care Circles
+      match /patients/{patientId} {
+        allow read: if belongsToCentre(centreId);
+        allow create, update, delete: if isStaff(centreId);
+      }
+
+      // Camps
+      match /camps/{campId} {
+        allow read: if belongsToCentre(centreId);
+        allow create, update, delete: if isStaff(centreId);
+      }
+
+      // Stock & Inventory
+      match /stock/{unitId} {
+        allow read: if belongsToCentre(centreId);
+        allow create, update, delete: if isStaff(centreId);
+      }
+
+      // Inter-centre transfer requests
+      match /transfers/{transferId} {
+        allow read: if belongsToCentre(centreId);
+        allow create: if isAuthenticated();
+        allow update: if belongsToCentre(centreId);
+      }
+
+      // Tamper-proof Audit logs: append-only (no update, no delete)
+      match /audit/{auditId} {
+        allow read: if belongsToCentre(centreId);
+        allow create: if isAuthenticated();
+        allow update, delete: if false;
+      }
+    }
+
+    // Global donor index for cross-centre deduplication (keyed by sha256 hash of phone)
+    match /globalDonors/{hashedPhone} {
+      allow get: if isAuthenticated();
+      allow list: if false; // Cannot list or scrape global donor phone hashes
+      allow create, update: if isAuthenticated();
+      allow delete: if false;
+    }
+  }
+}
