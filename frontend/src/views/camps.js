@@ -52,3 +52,4 @@ export function vCamp(id) {
     </section>
   </div>`;
 }
+

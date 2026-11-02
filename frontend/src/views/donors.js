@@ -63,3 +63,4 @@ export function vDonors() {
   </div>
   <div class="card" id="dtable" style="padding:6px 6px 0">${donorRows()}</div>`;
 }
+

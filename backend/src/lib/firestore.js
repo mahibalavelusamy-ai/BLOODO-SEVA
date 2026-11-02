@@ -36,3 +36,4 @@ export function getAuth() {
   if (!auth) initFirebase();
   return auth;
 }
+

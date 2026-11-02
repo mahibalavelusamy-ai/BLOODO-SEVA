@@ -42,3 +42,4 @@ export async function verifyAuth(req, res, next) {
     res.status(401).json({ error: 'Invalid or expired authentication token' });
   }
 }
+

@@ -55,3 +55,4 @@ export async function sendWhatsAppMessage({ to, text, buttons = ['Yes, I can', '
     return { success: false, error: err.message };
   }
 }
+

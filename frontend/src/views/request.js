@@ -109,3 +109,4 @@ export function vRequest(id) {
     </aside>
   </div>`;
 }
+

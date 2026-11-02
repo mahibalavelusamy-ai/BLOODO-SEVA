@@ -73,3 +73,4 @@ export function vPatient(id) {
     </aside>
   </div>`;
 }
+

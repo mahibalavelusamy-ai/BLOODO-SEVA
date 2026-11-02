@@ -114,3 +114,4 @@ export async function processDonorReply({ centreId, request, donorId, replyText,
 
   return { request, invite, action: isPause ? 'PAUSE_DONOR' : isNo ? 'REST_DONOR' : 'CONFIRMED' };
 }
+

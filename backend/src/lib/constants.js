@@ -29,3 +29,4 @@ export const COMP = {
 
 export const DAY = 864e5;
 export const MIN = 60000; // in production: real 60,000 ms = 1 minute
+

@@ -51,3 +51,4 @@ export function vStock() {
     <div class="card scroll-x" style="padding:6px 6px 0"><table class="table ftable"><thead><tr><th>Component</th>${GROUPS.map(x => `<th>${g(x)}</th>`).join('')}</tr></thead><tbody>
     ${['rbc', 'plt', 'ffp'].map(c => `<tr><td class="mid">${COMP[c].short}</td>${GROUPS.map(x => { const n = S.stock.filter(u => u.comp === c && u.group === x && ['stock', 'usefirst', 'offered'].includes(u.status)).length; return `<td style="${n === 0 ? 'color:var(--ink-3)' : ''}">${n}</td>`; }).join('')}</tr>`).join('')}</tbody></table></div></section>`;
 }
+

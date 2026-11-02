@@ -142,3 +142,4 @@ router.post('/:id/walkin', requireRole(['admin', 'staff']), async (req, res) => 
 });
 
 export default router;
+

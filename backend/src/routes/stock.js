@@ -77,3 +77,4 @@ router.post('/:id/usefirst', requireRole(['admin', 'staff']), async (req, res) =
 });
 
 export default router;
+

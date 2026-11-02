@@ -81,3 +81,4 @@ export function vCentre(tab = 'profile') {
   <nav class="tabs" aria-label="Centre">${tabs.map(([k, l]) => `<a href="#/centre/${k}" ${tab === k ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>
   ${body}`;
 }
+

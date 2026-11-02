@@ -14,3 +14,4 @@ export function requireRole(allowedRoles = ['admin', 'staff']) {
     next();
   };
 }
+
